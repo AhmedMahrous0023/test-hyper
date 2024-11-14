@@ -1,0 +1,48 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin" // Flutter plugin must be applied after Android and Kotlin plugins
+}
+
+android {
+    namespace = "com.example.hyperr" // Your app namespace
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId = "com.example.hyperr"
+        minSdk 21
+        targetSdk flutter.targetSdkVersion
+        versionCode flutter.versionCode
+        versionName flutter.versionName
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.debug // Debug signing used for release temporarily
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+dependencies {
+    implementation(name: "oppwa.mobile-release", ext: 'aar')
+    debugImplementation(name: "ipworks3ds_sdk", ext: 'aar')
+    releaseImplementation(name: "ipworks3ds_sdk_deploy", ext: 'aar')
+    implementation "com.google.android.material:material:1.6.1"
+    implementation "androidx.appcompat:appcompat:1.5.1"
+    implementation 'com.google.android.gms:play-services-wallet:19.1.0'
+    implementation "androidx.browser:browser:1.4.0"
+}
