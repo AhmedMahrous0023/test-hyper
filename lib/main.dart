@@ -1,7 +1,3 @@
-// لإتمام عملية الدفع باستخدام باكيدج HyperPay في Flutter، يجب أولًا الحصول على checkoutId عبر API من مبرمج الباك (كما تم شرحه سابقًا). بعد ذلك، يمكنك استخدام واجهة مستخدم جاهزة (UI) لعرضها للعميل لإدخال تفاصيل الدفع الخاصة به، مثل بيانات البطاقة. سأعرض لك مثالًا كاملاً يوضح كيفية استخدام باكيدج HyperPay في تطبيق Flutter.
-
-// مثال كامل:
-
 import 'package:flutter/material.dart';
 import 'package:hyperpay_plugin/flutter_hyperpay.dart';
 import 'package:http/http.dart' as http;
@@ -41,13 +37,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     flutterHyperPay = FlutterHyperPay(
-      shopperResultUrl: 'com.testpayment.payment', // URL لإرجاع النتيجة
-      paymentMode: PaymentMode.test, // وضع الدفع (اختبار أو إنتاج)
-      lang: 'ar', // اللغة
+      shopperResultUrl: 'com.testpayment.payment', 
+      paymentMode: PaymentMode.test, 
+      lang: 'ar', 
     );
   }
 
-  // الحصول على checkoutId من API
   Future<String?> getCheckOut() async {
     try{
     final url = Uri.parse('https://test.mdkhl.com/api/mobile/payment/CreateCheckoutPayment');
@@ -67,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
-      return responseData['value']['checkoutId']; // إرجاع checkoutId
+      return responseData['value']['checkoutId']; 
     } else {
       return ('Error: ${response.statusCode}');
     }}catch(e){
@@ -76,26 +71,23 @@ class _MyHomePageState extends State<MyHomePage> {
     return null ;
   }
 
-  // الدالة لبدء الدفع باستخدام الواجهة الجاهزة
   payRequestNowReadyUI(String checkoutId) async {
     PaymentResultData paymentResultData = await flutterHyperPay.readyUICards(
       readyUI: ReadyUI(
-        brandsName: ["VISA", "MASTER", "MADA"], // العلامات التجارية المتاحة
-        checkoutId: checkoutId, // إرسال checkoutId
-        merchantIdApplePayIOS: 'merchantId', // معرّف التاجر لأجهزة آبل
-        countryCodeApplePayIOS: 'SA', // كود الدولة
+        brandsName: ["VISA", "MASTER", "MADA"], 
+        checkoutId: checkoutId, 
+        merchantIdApplePayIOS: 'merchantId', 
+        countryCodeApplePayIOS: 'SA',
         companyNameApplePayIOS: 'Test Co',
-        themColorHexIOS: "#000000", // اللون
+        themColorHexIOS: "#000000", 
         setStorePaymentDetailsMode:
-            true, // حفظ بيانات الدفع للاستخدام المستقبلي
+            true, 
       ),
     );
 
-    // معالجة النتيجة
     if (paymentResultData.paymentResult == PaymentResult.success ||
         paymentResultData.paymentResult == PaymentResult.sync) {
       dev.log('Payment Success');
-      // يمكن هنا تنفيذ إجراءات إضافية مثل حفظ البيانات أو تحديث الحالة
     }
     print(paymentResultData.paymentResult);
   }
@@ -127,32 +119,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-// خطوات الكود:
-
-// 1. إعدادات flutter_hyperpay: يتم تهيئة باكيدج flutter_hyperpay باستخدام معلمات مثل shopperResultUrl (URL لإرجاع النتيجة بعد الدفع)، paymentMode (وضع الدفع سواء كان للاختبار أو للإنتاج)، و lang (اللغة).
-
-
-// 2. الحصول على checkoutId: يتم طلب checkoutId من خلال API مبرمج الباك، الذي سيقوم بإرجاع checkoutId الذي ستحتاجه لتمريره إلى واجهة الدفع.
-
-
-// 3. عرض واجهة الدفع:
-
-// باستخدام readyUICards، يتم إعداد واجهة الدفع الجاهزة التي تعرض للمستخدم خيارات الدفع مثل الفيزا والماستر كارد وMADA.
-
-// يتم إرسال checkoutId كجزء من الطلب.
-
-
-
-// 4. التفاعل مع النتيجة: إذا تم الدفع بنجاح أو تم التزامن بنجاح، يمكن تنفيذ الإجراءات المطلوبة (مثل تسجيل المدفوعات أو تحديث الحالة في التطبيق).
-
-
-
-// ملاحظات:
-
-// تأكد من أنك قد حصلت على checkoutId قبل بدء عملية الدفع.
-
-// إذا كنت تستخدم readyUICards، سيقوم الباكيدج بعرض واجهة المستخدم الخاصة بالدفع مباشرة داخل التطبيق، ولن تحتاج إلى WebView لعرض صفحة خارجية.
-
-
-// هذا المثال يوفر طريقة لإجراء عملية الدفع باستخدام الواجهة الجاهزة من باكيدج flutter_hyperpay.
